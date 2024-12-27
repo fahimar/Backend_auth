@@ -5,6 +5,7 @@ from jose import jwt, JWTError
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
+from sqlalchemy import select  # Import the 'select' function
 
 from database import get_db
 import models
@@ -18,12 +19,12 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 bcrypt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def existing_user(db: Session, username: str, email: str):
-    result = await db.execute(select(models.User).where(models.User.username == username))  # Use 'select'
+    result = await db.execute(select(models.User).where(models.User.username == username))
     db_user = result.scalars().first()
     if db_user:
         return db_user
 
-    result = await db.execute(select(models.User).where(models.User.email == email))  # Use 'select'
+    result = await db.execute(select(models.User).where(models.User.email == email))
     db_user = result.scalars().first()
     if db_user:
         return db_user
