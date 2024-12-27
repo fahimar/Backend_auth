@@ -1,0 +1,4 @@
+SELECT users.id AS users_id, users.usesrnaem AS users_usesrnaem, users.email AS users_email, users.hashed_password AS users_hashed_password, users.created_dt AS users_created_dt 
+FROM users 
+WHERE users.username = ? 
+LIMIT ? OFFSET ?

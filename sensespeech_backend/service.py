@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from jose import jwt, JWTError
@@ -17,11 +18,13 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
 bcrypt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def existing_user(db: Session, username: str, email: str):
-    db_user = db.query(models.User).filter(models.User.username == username).first()
+    result = await db.execute(select(models.User).where(models.User.username == username))  # Use 'select'
+    db_user = result.scalars().first()
     if db_user:
         return db_user
 
-    db_user = db.query(models.User).filter(models.User.email == email).first()
+    result = await db.execute(select(models.User).where(models.User.email == email))  # Use 'select'
+    db_user = result.scalars().first()
     if db_user:
         return db_user
     return None
